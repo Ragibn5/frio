@@ -2,9 +2,9 @@ name: frio
 description: A flutter network library with central error conversion, request and response serialization/deserialization and much more.
 homepage: https://github.com/Ragibn5/frio.git
 
-version: 0.0.1
-
 publish_to: 'none'
+
+version: 0.0.1
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
