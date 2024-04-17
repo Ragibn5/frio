@@ -52,15 +52,15 @@ class FrioClient<MappedErrorType> {
   /// [options.baseUrl] and [options.path] of the [options] parameter
   /// will be overridden by [path] & [baseUrl] parameters.
   Future<Either<MappedErrorType, ResultType>> execute<ResultType>(
-    String path,
-    String baseUrl, {
+    String path, {
+    String? baseUrl,
     required RequestOptions options,
   }) {
     return _processResponse<ResultType>(
       _dio.fetch(
         options.copyWith(
           path: path,
-          baseUrl: baseUrl,
+          baseUrl: baseUrl ?? _dio.options.baseUrl,
         ),
       ),
     );
