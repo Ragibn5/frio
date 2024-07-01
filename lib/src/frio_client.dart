@@ -42,10 +42,6 @@ class FrioClient<MappedErrorType> {
     _dio.interceptors.addAll(interceptors);
   }
 
-  /// Only use this if absolutely necessary.
-  /// One use case would be inside interceptor where we need raw response.
-  Dio getCoreDioClient() => _dio;
-
   /// **Execute a raw request**.
   ///
   /// Some properties of the passed [Options] instance, specifically,
@@ -168,6 +164,10 @@ class FrioClient<MappedErrorType> {
       ),
     );
   }
+
+  /// Only use this if absolutely necessary.
+  /// One use case would be inside interceptor where we need raw response.
+  Dio getCoreDioClient() => _dio;
 
   dynamic _buildRequest(dynamic requestData) {
     return requestData != null ? _serializer.encode(requestData) : null;
