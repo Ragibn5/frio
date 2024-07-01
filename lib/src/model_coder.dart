@@ -1,6 +1,6 @@
 typedef Decoder<T> = T Function(Map<String, dynamic> jsonMap);
 
-abstract class ModelSerializer {
+abstract class ModelCoder {
   final Map<Type, Decoder> _parserMap = {};
 
   /// **Get the decoder for the requested type.**

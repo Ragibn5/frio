@@ -3,19 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'error_mapper.dart';
-import 'model_serializer.dart';
+import 'model_coder.dart';
 
 class FrioClient<MappedErrorType> {
   final _dio = Dio();
 
-  final ModelSerializer _serializer;
+  final ModelCoder _serializer;
   final ErrorMapper<MappedErrorType> _errorMapper;
 
   /// **Create a Frio client.**
   /// - Provide a [baseUrl] which will be used as the base url of all the
   /// api calls made with this [FrioClient] instance. This will override
   /// [baseOptions.baseUrl].
-  /// - Provide a subclass of [ModelSerializer] which will be used to
+  /// - Provide a subclass of [ModelCoder] which will be used to
   /// serialize/deserialize requests/responses.
   /// - Provide a subclass of [ErrorMapper] which will be used to map
   /// exceptions or errors thrown by the underlying dio instance to your
@@ -24,7 +24,7 @@ class FrioClient<MappedErrorType> {
   /// requests, responses and errors.
   FrioClient({
     required String baseUrl,
-    required ModelSerializer serializer,
+    required ModelCoder serializer,
     required ErrorMapper<MappedErrorType> errorMapper,
     List<Interceptor> interceptors = const [],
     BaseOptions? baseOptions,

@@ -1,9 +1,11 @@
 import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
 import 'package:flutter/foundation.dart';
 
-import 'model_serializer.dart';
+import 'model_coder.dart';
 
-class JsonSerializer extends ModelSerializer {
+/// A serializer/deserializer for encoding/decoding to/from json.
+/// It also supports serialization/deserialization of primitive constructs.
+abstract class JsonCoder extends ModelCoder {
   final _primitiveChecker = _PrimitiveConstructChecker();
 
   /// **Encode [data].**
