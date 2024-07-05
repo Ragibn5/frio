@@ -3,19 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'error_mapper.dart';
-import 'model_serializer.dart';
+import 'model_coder.dart';
 
 class FrioClient<MappedErrorType> {
   final _dio = Dio();
 
-  final ModelSerializer _serializer;
+  final ModelCoder _coder;
   final ErrorMapper<MappedErrorType> _errorMapper;
 
   /// **Create a Frio client.**
   /// - Provide a [baseUrl] which will be used as the base url of all the
   /// api calls made with this [FrioClient] instance. This will override
   /// [baseOptions.baseUrl].
-  /// - Provide a subclass of [ModelSerializer] which will be used to
+  /// - Provide a subclass of [ModelCoder] which will be used to
   /// serialize/deserialize requests/responses.
   /// - Provide a subclass of [ErrorMapper] which will be used to map
   /// exceptions or errors thrown by the underlying dio instance to your
@@ -24,11 +24,11 @@ class FrioClient<MappedErrorType> {
   /// requests, responses and errors.
   FrioClient({
     required String baseUrl,
-    required ModelSerializer serializer,
+    required ModelCoder coder,
     required ErrorMapper<MappedErrorType> errorMapper,
     List<Interceptor> interceptors = const [],
     BaseOptions? baseOptions,
-  })  : _serializer = serializer,
+  })  : _coder = coder,
         _errorMapper = errorMapper {
     // merge base options
     if (baseOptions != null) {
@@ -41,10 +41,6 @@ class FrioClient<MappedErrorType> {
     // add interceptors
     _dio.interceptors.addAll(interceptors);
   }
-
-  /// Only use this if absolutely necessary.
-  /// One use case would be inside interceptor where we need raw response.
-  Dio getCoreDioClient() => _dio;
 
   /// **Execute a raw request**.
   ///
@@ -169,15 +165,19 @@ class FrioClient<MappedErrorType> {
     );
   }
 
+  /// Only use this if absolutely necessary.
+  /// One use case would be inside interceptor where we need raw response.
+  Dio getCoreDioClient() => _dio;
+
   dynamic _buildRequest(dynamic requestData) {
-    return requestData != null ? _serializer.encode(requestData) : null;
+    return requestData != null ? _coder.encode(requestData) : null;
   }
 
   Future<Either<MappedErrorType, ResultType>> _processResponse<ResultType>(
     final Future<Response<dynamic>> asyncRunnable,
   ) async {
     try {
-      return Right(_serializer.decode<ResultType>((await asyncRunnable).data));
+      return Right(_coder.decode<ResultType>((await asyncRunnable).data));
     } on Exception catch (e, st) {
       debugPrintStack(label: e.toString(), stackTrace: st);
       return Left(_errorMapper.mapError(e));
