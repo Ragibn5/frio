@@ -178,8 +178,8 @@ class FrioClient<MappedErrorType> {
   ) async {
     try {
       return Right(_coder.decode<ResultType>((await asyncRunnable).data));
-    } on Exception catch (e, st) {
-      debugPrintStack(label: e.toString(), stackTrace: st);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
       return Left(_errorMapper.mapError(e));
     }
   }

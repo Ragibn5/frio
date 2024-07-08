@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,7 +28,8 @@ abstract class JsonCoder extends ModelCoder {
       return data.toMap();
     } catch (e) {
       debugPrint(
-        "Could not find a method called toMap(), trying with toJson()...",
+        "Could not find a method called toMap(), "
+        "trying with toJson()...",
       );
     }
 
@@ -34,9 +37,9 @@ abstract class JsonCoder extends ModelCoder {
       return data.toJson();
     } catch (e) {
       throw SerializationException(
-        "Could not find a toMap() or toJson() method within the object. "
-        "Make sure you have a method called toMap() or toJson() method its "
-        "class definition that returns its own encoded form.",
+        "Couldn't find a toMap()/toJson() method within the passed argument. "
+        "Make sure you have a method called toMap()/toJson() within its class "
+        "definition that returns its own encoded form.",
       );
     }
   }
@@ -47,13 +50,15 @@ abstract class JsonCoder extends ModelCoder {
   ///
   /// In either case the return type should strictly be the specified type.
   /// If not, [SerializationException] exception is thrown.
+  /// It also throws [SerializationException] in case there were any error
+  /// decoding [data] to the expected type.
   @override
   ResultType decode<ResultType>(dynamic data) {
     if (_primitiveChecker.isPrimitiveConstruct(data)) {
       if (data.runtimeType != ResultType) {
         throw SerializationException(
-          "The expected type was $ResultType, "
-          "but got response of type ${data.runtimeType}.",
+          "The expected type was \"$ResultType\", "
+          "but got response of type \"${data.runtimeType}\".",
         );
       }
       return data;
@@ -62,11 +67,21 @@ abstract class JsonCoder extends ModelCoder {
       if (parser == null) {
         throw SerializationException(
           "Could not find a registered decoder method "
-          "(typically fromJson(...) or fromMap(...)) for the type $ResultType."
+          "(typically fromJson(...)/fromMap(...)) for type \"$ResultType\". "
           "Did you forget to register it with $addDecoder(...) ?",
         );
       }
-      return parser(data);
+      try {
+        return parser(data);
+      } catch (e) {
+        throw SerializationException(
+          "Failed to parse the argument to the target type \"$ResultType\". "
+          "Make sure you have a proper mapping between \"$ResultType\" and "
+          "the passed argument."
+          "\nOriginal exception:\n$e"
+          "\nPassed argument:\n${JsonEncoder.withIndent("  ").convert(data)}\n",
+        );
+      }
     } else {
       throw SerializationException(
         "The response is not parsable. Only the following are supported:\n"
