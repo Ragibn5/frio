@@ -29,7 +29,7 @@ abstract class JsonCoder extends ModelCoder {
     } catch (e) {
       debugPrint(
         "Could not find a method called toMap(), "
-            "trying with toJson()...",
+        "trying with toJson()...",
       );
     }
 
@@ -38,8 +38,8 @@ abstract class JsonCoder extends ModelCoder {
     } catch (e) {
       throw SerializationException(
         "Couldn't find a toMap()/toJson() method within the passed argument. "
-            "Make sure you have a method called toMap()/toJson() within its class "
-            "definition that returns its own encoded form.",
+        "Make sure you have a method called toMap()/toJson() within its class "
+        "definition that returns its own encoded form.",
       );
     }
   }
@@ -58,7 +58,7 @@ abstract class JsonCoder extends ModelCoder {
       if (data.runtimeType != ResultType) {
         throw SerializationException(
           "The expected type was \"$ResultType\", "
-              "but got response of type \"${data.runtimeType}\".",
+          "but got response of type \"${data.runtimeType}\".",
         );
       }
       return data;
@@ -67,28 +67,28 @@ abstract class JsonCoder extends ModelCoder {
       if (parser == null) {
         throw SerializationException(
           "Could not find a registered decoder method "
-              "(typically fromJson(...)/fromMap(...)) for type \"$ResultType\". "
-              "Did you forget to register it with $addDecoder(...) ?",
+          "(typically fromJson(...)/fromMap(...)) for type \"$ResultType\". "
+          "Did you forget to register it with $addDecoder(...) ?",
         );
       }
       try {
         return parser(data);
       } catch (e) {
         throw SerializationException(
-          "Failed to parse the argument to the target type \"($ResultType)\". "
-              "Make sure you have a proper mapping between \"$ResultType)\" and "
-              "the passed argument."
-              "\nOriginal exception:\n$e"
-              "\nPassed argument:\n${JsonEncoder.withIndent("  ").convert(data)}\n",
+          "Failed to parse the argument to the target type \"$ResultType\". "
+          "Make sure you have a proper mapping between \"$ResultType\" and "
+          "the passed argument."
+          "\nOriginal exception:\n$e"
+          "\nPassed argument:\n${JsonEncoder.withIndent("  ").convert(data)}\n",
         );
       }
     } else {
       throw SerializationException(
         "The response is not parsable. Only the following are supported:\n"
-            "- Primitive\n"
-            "- List<Primitive>\n"
-            "- Map<Primitive, Primitive>\n"
-            "- Map<String, Parsable> (Json map)\n",
+        "- Primitive\n"
+        "- List<Primitive>\n"
+        "- Map<Primitive, Primitive>\n"
+        "- Map<String, Parsable> (Json map)\n",
       );
     }
   }
