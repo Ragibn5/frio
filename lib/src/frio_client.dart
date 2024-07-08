@@ -48,10 +48,10 @@ class FrioClient<MappedErrorType> {
   /// [options.baseUrl] and [options.path] of the [options] parameter
   /// will be overridden by [path] & [baseUrl] parameters.
   Future<Either<MappedErrorType, ResultType>> execute<ResultType>(
-    String path, {
-    String? baseUrl,
-    required RequestOptions options,
-  }) {
+      String path, {
+        String? baseUrl,
+        required RequestOptions options,
+      }) {
     return _processResponse<ResultType>(
       _dio.fetch(
         options.copyWith(
@@ -64,13 +64,13 @@ class FrioClient<MappedErrorType> {
 
   /// **Execute a get request**.
   Future<Either<MappedErrorType, ResultType>> get<ResultType>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  }) {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) {
     return _processResponse<ResultType>(
       _dio.get(
         path,
@@ -85,13 +85,13 @@ class FrioClient<MappedErrorType> {
 
   /// **Execute a post request**.
   Future<Either<MappedErrorType, ResultType>> post<ResultType>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  }) {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) {
     return _processResponse<ResultType>(
       _dio.post(
         path,
@@ -106,13 +106,13 @@ class FrioClient<MappedErrorType> {
 
   /// **Execute a put request**.
   Future<Either<MappedErrorType, ResultType>> put<ResultType>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  }) {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) {
     return _processResponse<ResultType>(
       _dio.put(
         path,
@@ -127,12 +127,12 @@ class FrioClient<MappedErrorType> {
 
   /// **Execute a delete request**.
   Future<Either<MappedErrorType, ResultType>> delete<ResultType>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-  }) {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+      }) {
     return _processResponse<ResultType>(
       _dio.delete(
         path,
@@ -146,13 +146,13 @@ class FrioClient<MappedErrorType> {
 
   /// **Execute a patch request**.
   Future<Either<MappedErrorType, ResultType>> patch<ResultType>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  }) {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) {
     return _processResponse<ResultType>(
       _dio.patch(
         path,
@@ -174,21 +174,21 @@ class FrioClient<MappedErrorType> {
   }
 
   Future<Either<MappedErrorType, ResultType>> _processResponse<ResultType>(
-    final Future<Response<dynamic>> asyncRunnable,
-  ) async {
+      final Future<Response<dynamic>> asyncRunnable,
+      ) async {
     try {
       return Right(_coder.decode<ResultType>((await asyncRunnable).data));
-    } on Exception catch (e, st) {
-      debugPrintStack(label: e.toString(), stackTrace: st);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
       return Left(_errorMapper.mapError(e));
     }
   }
 
   // Merges [newBaseOptions] on top of [destBaseOptions].
   void _mergeBaseOptions(
-    BaseOptions newBaseOptions,
-    BaseOptions destBaseOptions,
-  ) {
+      BaseOptions newBaseOptions,
+      BaseOptions destBaseOptions,
+      ) {
     destBaseOptions.method = newBaseOptions.method;
     destBaseOptions.connectTimeout = newBaseOptions.connectTimeout;
     destBaseOptions.receiveTimeout = newBaseOptions.receiveTimeout;

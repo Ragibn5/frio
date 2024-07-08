@@ -4,7 +4,7 @@ homepage: https://github.com/Ragibn5/frio.git
 
 publish_to: 'none'
 
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
