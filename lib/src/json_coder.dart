@@ -25,20 +25,20 @@ abstract class JsonCoder extends ModelCoder {
     }
 
     try {
-      return data.toMap();
+      return data.toJson();
     } catch (e) {
       debugPrint(
-        "Could not find a method called toMap(), "
-        "trying with toJson()...",
+        "Could not find a method called toJson(), "
+        "trying with toMap()...",
       );
     }
 
     try {
-      return data.toJson();
+      return data.toMap();
     } catch (e) {
       throw SerializationException(
-        "Couldn't find a toMap()/toJson() method within the passed argument. "
-        "Make sure you have a method called toMap()/toJson() within its class "
+        "Couldn't find a toJson()/toMap() method within the passed argument. "
+        "Make sure you have a method called toJson()/toMap() within its class "
         "definition that returns its own encoded form.",
       );
     }
