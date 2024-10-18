@@ -28,10 +28,7 @@ dependencies:
   dio: ^5.2.1+1
 
   # custom dependencies
-  dart_extended_exceptions:
-    git:
-      url: https://github.com/Ragibn5/dart_extended_exceptions.git
-      ref: v0.0.1
+  # ...
 
 dev_dependencies:
   flutter_test:
