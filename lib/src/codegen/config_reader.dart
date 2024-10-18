@@ -22,16 +22,13 @@ class ConfigReader {
         configYaml['frio_models_registerer']['class_name'] as String?;
     final outputFilePath =
         configYaml['frio_models_registerer']['output_file'] as String?;
-    final requireToJson =
-        configYaml['frio_models_registerer']['require_toJson'] as bool?;
     if (className == null || outputFilePath == null) {
-      throw StateError('Invalid coder configuration');
+      throw StateError('Invalid parser configuration');
     }
 
     return ModelParserConfig(
       outputPath: outputFilePath,
       outputClassName: className,
-      requireToJson: requireToJson ?? false,
     );
   }
 }

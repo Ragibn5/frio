@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
+import 'package:frio/src/codegen/frio_model_annotations.dart';
+import 'package:frio/src/parsers/model_parser.dart';
 
-import '../../frio.dart';
 
 /// A serializer/deserializer for encoding/decoding to/from json.
 /// It also supports serialization/deserialization of primitive constructs.
@@ -59,7 +60,7 @@ abstract class JsonParser extends ModelParser {
           "Could not find a registered decoder method "
           "(fromJson(...)) for type \"$ResultType\". "
           "\nDid you forget to register it with $addDecoder(...) ?"
-          "\nConsider annotating the model with $frioJson to auto register with build runner.",
+          "\nConsider annotating the model with $FrioJson to auto register with build runner.",
         );
       }
       try {
