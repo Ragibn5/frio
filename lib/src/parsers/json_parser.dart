@@ -4,7 +4,6 @@ import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
 import 'package:frio/src/codegen/frio_model_annotations.dart';
 import 'package:frio/src/parsers/model_parser.dart';
 
-
 /// A serializer/deserializer for encoding/decoding to/from json.
 /// It also supports serialization/deserialization of primitive constructs.
 abstract class JsonParser extends ModelParser {

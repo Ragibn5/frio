@@ -4,6 +4,7 @@ homepage: https://github.com/Ragibn5/frio.git
 
 publish_to: 'none'
 
+# library version
 version: 0.0.5
 
 environment:
