@@ -1,21 +1,20 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
-import 'error_mapper.dart';
-import 'model_coder.dart';
+import 'mappers/error_mapper.dart';
+import 'parsers/model_parser.dart';
 
 class FrioClient<MappedErrorType> {
   final _dio = Dio();
 
-  final ModelCoder _coder;
+  final ModelParser _coder;
   final ErrorMapper<MappedErrorType> _errorMapper;
 
   /// **Create a Frio client.**
   /// - Provide a [baseUrl] which will be used as the base url of all the
   /// api calls made with this [FrioClient] instance. This will override
   /// [baseOptions.baseUrl].
-  /// - Provide a subclass of [ModelCoder] which will be used to
+  /// - Provide a subclass of [ModelParser] which will be used to
   /// serialize/deserialize requests/responses.
   /// - Provide a subclass of [ErrorMapper] which will be used to map
   /// exceptions or errors thrown by the underlying dio instance to your
@@ -24,11 +23,11 @@ class FrioClient<MappedErrorType> {
   /// requests, responses and errors.
   FrioClient({
     required String baseUrl,
-    required ModelCoder coder,
+    required ModelParser modelParser,
     required ErrorMapper<MappedErrorType> errorMapper,
     List<Interceptor> interceptors = const [],
     BaseOptions? baseOptions,
-  })  : _coder = coder,
+  })  : _coder = modelParser,
         _errorMapper = errorMapper {
     // merge base options
     if (baseOptions != null) {
@@ -179,7 +178,6 @@ class FrioClient<MappedErrorType> {
     try {
       return Right(_coder.decode<ResultType>((await asyncRunnable).data));
     } on Exception catch (e) {
-      debugPrint(e.toString());
       return Left(_errorMapper.mapError(e));
     }
   }
