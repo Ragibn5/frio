@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:frio/src/exceptions/parse_exception.dart';
 import 'package:frio/src/mappers/error_mapper.dart';
 import 'package:frio/src/parsers/model_parser.dart';
 
 class FrioClient<MappedErrorType> {
   final _dio = Dio();
 
-  final ModelParser _coder;
+  final ModelParser _parser;
   final ErrorMapper<MappedErrorType> _errorMapper;
 
   /// **Create a Frio client.**
@@ -26,7 +27,7 @@ class FrioClient<MappedErrorType> {
     required ErrorMapper<MappedErrorType> errorMapper,
     List<Interceptor> interceptors = const [],
     BaseOptions? baseOptions,
-  })  : _coder = modelParser,
+  })  : _parser = modelParser,
         _errorMapper = errorMapper {
     // merge base options
     if (baseOptions != null) {
@@ -168,16 +169,18 @@ class FrioClient<MappedErrorType> {
   Dio getCoreDioClient() => _dio;
 
   dynamic _buildRequest(dynamic requestData) {
-    return requestData != null ? _coder.encode(requestData) : null;
+    return requestData != null ? _parser.encode(requestData) : null;
   }
 
   Future<Either<MappedErrorType, ResultType>> _processResponse<ResultType>(
     final Future<Response<dynamic>> asyncRunnable,
   ) async {
     try {
-      return Right(_coder.decode<ResultType>((await asyncRunnable).data));
-    } on Exception catch (e) {
-      return Left(_errorMapper.mapError(e));
+      return Right(_parser.decode<ResultType>((await asyncRunnable).data));
+    } on ParseException catch (e, st) {
+      return Left(_errorMapper.mapError(e, st));
+    } catch (e, st) {
+      return Left(_errorMapper.mapError(e, st));
     }
   }
 

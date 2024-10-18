@@ -1,3 +1,3 @@
 abstract class ErrorMapper<T> {
-  T mapError(Exception exception);
+  T mapError(Object exception, StackTrace? stackTrace);
 }
