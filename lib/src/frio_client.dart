@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-
-import 'mappers/error_mapper.dart';
-import 'parsers/model_parser.dart';
+import 'package:frio/src/mappers/error_mapper.dart';
+import 'package:frio/src/parsers/model_parser.dart';
 
 class FrioClient<MappedErrorType> {
   final _dio = Dio();
