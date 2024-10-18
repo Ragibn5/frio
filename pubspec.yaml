@@ -4,7 +4,7 @@ homepage: https://github.com/Ragibn5/frio.git
 
 publish_to: 'none'
 
-version: 0.0.3
+version: 0.0.5
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
@@ -13,6 +13,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # tools
+  yaml: ^3.1.2
+  build: ^2.4.1
+  analyzer: ^6.2.0
+  source_gen: ^1.5.0
 
   # dartz
   dartz: ^0.10.1
@@ -29,7 +35,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # lint
   flutter_lints: ^2.0.0
+
+  # build runner
+  build_runner: ^2.4.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

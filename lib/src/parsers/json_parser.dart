@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
-import 'package:flutter/foundation.dart';
 
-import 'model_coder.dart';
+import '../../frio.dart';
 
 /// A serializer/deserializer for encoding/decoding to/from json.
 /// It also supports serialization/deserialization of primitive constructs.
-abstract class JsonCoder extends ModelCoder {
+abstract class JsonParser extends ModelParser {
   final _primitiveChecker = _PrimitiveConstructChecker();
 
   /// **Encode [data].**
@@ -16,7 +15,7 @@ abstract class JsonCoder extends ModelCoder {
   /// Else encodes before sending to underlying layer.
   /// <br>
   /// This method expects (if [data] is NOT a primitive construct) that
-  /// [data] contains a method called [toMap] or [toJson] that returns its
+  /// [data] contains a method called [toJson] that returns its own json
   /// encoded form.
   @override
   dynamic encode(dynamic data) {
@@ -27,19 +26,10 @@ abstract class JsonCoder extends ModelCoder {
     try {
       return data.toJson();
     } catch (e) {
-      debugPrint(
-        "Could not find a method called toJson(), "
-        "trying with toMap()...",
-      );
-    }
-
-    try {
-      return data.toMap();
-    } catch (e) {
       throw SerializationException(
-        "Couldn't find a toJson()/toMap() method within the passed argument. "
-        "Make sure you have a method called toJson()/toMap() within its class "
-        "definition that returns its own encoded form.",
+        "Couldn't find 'toJson()' method within the passed argument. "
+        "Make sure you have a method called toJson() within the class"
+        "definition that returns its own json map.",
       );
     }
   }
@@ -67,8 +57,9 @@ abstract class JsonCoder extends ModelCoder {
       if (parser == null) {
         throw SerializationException(
           "Could not find a registered decoder method "
-          "(typically fromJson(...)/fromMap(...)) for type \"$ResultType\". "
-          "Did you forget to register it with $addDecoder(...) ?",
+          "(fromJson(...)) for type \"$ResultType\". "
+          "\nDid you forget to register it with $addDecoder(...) ?"
+          "\nConsider annotating the model with $frioJson to auto register with build runner.",
         );
       }
       try {
@@ -76,10 +67,11 @@ abstract class JsonCoder extends ModelCoder {
       } catch (e) {
         throw SerializationException(
           "Failed to parse the argument to the target type \"$ResultType\". "
-          "Make sure you have a proper mapping between \"$ResultType\" and "
+          "\nMake sure you have a proper mapping between \"$ResultType\" and "
           "the passed argument."
           "\nOriginal exception:\n$e"
-          "\nPassed argument:\n${JsonEncoder.withIndent("  ").convert(data)}\n",
+          "\nPassed argument:"
+          "\n${const JsonEncoder.withIndent("  ").convert(data)}\n",
         );
       }
     } else {
