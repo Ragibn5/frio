@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:dart_extended_exceptions/dart_extended_exceptions.dart';
 import 'package:frio/src/codegen/frio_model_annotations.dart';
+import 'package:frio/src/exceptions/parse_exception.dart';
 import 'package:frio/src/parsers/model_parser.dart';
 
 /// A serializer/deserializer for encoding/decoding to/from json.
@@ -25,11 +25,12 @@ abstract class JsonParser extends ModelParser {
 
     try {
       return data.toJson();
-    } catch (e) {
-      throw SerializationException(
+    } catch (e, st) {
+      throw ParseException(
         "Couldn't find 'toJson()' method within the passed argument. "
-        "Make sure you have a method called toJson() within the class"
-        "definition that returns its own json map.",
+        "Make sure you have called toJson() within the class definition"
+        "that returns its own json map.",
+        stackTrace: st,
       );
     }
   }
@@ -39,15 +40,15 @@ abstract class JsonParser extends ModelParser {
   /// - Else, tries to decode the the data to the specified type.
   ///
   /// In either case the return type should strictly be the specified type.
-  /// If not, [SerializationException] exception is thrown.
-  /// It also throws [SerializationException] in case there were any error
+  /// If not, [ParseException] exception is thrown.
+  /// It also throws [ParseException] in case there were any error
   /// decoding [data] to the expected type.
   @override
   ResultType decode<ResultType>(dynamic data) {
     if (_primitiveChecker.isPrimitiveConstruct(data)) {
       if (data.runtimeType != ResultType) {
-        throw SerializationException(
-          "The expected type was \"$ResultType\", "
+        throw ParseException(
+          "The expected type was `$ResultType`, "
           "but got response of type \"${data.runtimeType}\".",
         );
       }
@@ -55,27 +56,27 @@ abstract class JsonParser extends ModelParser {
     } else if (data is Map<String, dynamic>) {
       final parser = getDecoder<ResultType>();
       if (parser == null) {
-        throw SerializationException(
-          "Could not find a registered decoder method "
-          "(fromJson(...)) for type \"$ResultType\". "
-          "\nDid you forget to register it with $addDecoder(...) ?"
-          "\nConsider annotating the model with $FrioJson to auto register with build runner.",
+        throw ParseException(
+          "Could not find the decoder (fromJson(...)) for `$ResultType`."
+          "\nDid you forget to register it with `addDecoder(...)`?"
+          "\nConsider annotating the model with `$FrioJson` to auto register."
+          "\n(Please run build runner afterwards to generate the json parser).",
         );
       }
       try {
         return parser(data);
-      } catch (e) {
-        throw SerializationException(
-          "Failed to parse the argument to the target type \"$ResultType\". "
-          "\nMake sure you have a proper mapping between \"$ResultType\" and "
+      } catch (e, st) {
+        throw ParseException(
+          "Failed to parse the argument to the target type: `$ResultType`."
+          "\nMake sure you have a proper mapping between `$ResultType` and "
           "the passed argument."
-          "\nOriginal exception:\n$e"
           "\nPassed argument:"
-          "\n${const JsonEncoder.withIndent("  ").convert(data)}\n",
+          "\n${const JsonEncoder.withIndent("  ").convert(data)}",
+          stackTrace: st,
         );
       }
     } else {
-      throw SerializationException(
+      throw ParseException(
         "The response is not parsable. Only the following are supported:\n"
         "- Primitive\n"
         "- List<Primitive>\n"
