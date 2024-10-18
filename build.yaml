@@ -1,0 +1,20 @@
+builders:
+  json_model_collector:
+    import: "package:frio/src/codegen/json_model_data_collector.dart"
+    builder_factories: [ "jsonModelDataCollector" ]
+    build_extensions: { ".dart": [ ".frio.dart" ] }
+    auto_apply: dependents
+    build_to: source
+    applies_builders: [ "frio|json_parser_builder" ]
+    defaults:
+      options:
+        always_generate: true
+        config_file: frio_config.yaml
+post_process_builders:
+  json_parser_builder:
+    import: "package:frio/src/codegen/json_parser_builder.dart"
+    builder_factory: "jsonParserBuilder"
+    defaults:
+      options:
+        always_generate: true
+        config_file: frio_config.yaml
